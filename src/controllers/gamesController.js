@@ -31,3 +31,24 @@ export async function getGames(req,res){
         res.status(500).send("Ocorreu um erro ao obter os jogos!");
     }
 }
+
+export async function createGame(req,res){
+    const {name, image, stockTotal, categoryId, pricePerDay} = req.body;
+
+    try {
+        
+        const query = `
+            INSERT INTO games (name,image,"stockTotal","categoryId","pricePerDay")
+            VALUES ($1, $2, $3, $4, $5)
+        `;
+        const values = [name, image, stockTotal, categoryId, pricePerDay];
+        await db.query(query,values);
+
+        res.sendStatus(201);
+
+    } catch(e) {
+        console.log(e);
+        res.status(500).send("Ocorreu um erro ao cadastrar o jogo.");
+    }
+   
+}
