@@ -28,7 +28,7 @@ export async function createCategory(req, res) {
         await db.query(query, values);
 
         res.sendStatus(201);
-        
+
     } catch (e) {
         console.log(e);
         res.status(500).send("Ocorreu um erro ao criar a categoria!");
