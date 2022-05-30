@@ -30,7 +30,7 @@ export async function gamesMiddleware(req, res, next) {
         `;
         const values = [game.name.toLowerCase()];
         const checkExists = db.query(query, values);
-        if (!checkExists) {
+        if (checkExists) {
             res.status(409).send("Esse jogo já foi cadastrado.");
             return;
         }
