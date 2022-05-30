@@ -6,8 +6,7 @@ export async function gamesMiddleware(req, res, next) {
     const game = req.body;
 
     try {
-        let maxId = await db.query(`SELECT MAX(id) FROM games`);
-        console.log(maxId.rows[0].max);
+        let maxId = await db.query(`SELECT MAX(id) FROM categories`);
         maxId.rows[0].max ? maxId = maxId.rows[0].max : maxId = 1;
 
         const gameSchema = joi.object({
@@ -29,8 +28,9 @@ export async function gamesMiddleware(req, res, next) {
             WHERE name = $1
         `;
         const values = [game.name.toLowerCase()];
-        const checkExists = db.query(query, values);
-        if (checkExists) {
+        const checkExists = await db.query(query, values);
+        console.log(checkExists);
+        if (checkExists.rowCount !== 0) {
             res.status(409).send("Esse jogo já foi cadastrado.");
             return;
         }
