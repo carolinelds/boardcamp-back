@@ -4,13 +4,15 @@ import {
     checkCustomerId,
     checkGameId,
     daysRentedIsPositive,
-    gamesIsAvailable
+    gamesIsAvailable,
+    checkRentalId,
+    checkRentalIsOpen
 } from './../middlewares/rentalsMiddleware.js';
 
 const rentalsRouter = Router();
 
 rentalsRouter.get("/rentals", getRentals);
 rentalsRouter.post("/rentals", daysRentedIsPositive, checkCustomerId, checkGameId, gamesIsAvailable, createRental);
-rentalsRouter.post("/rentals/:id/return", closeRental);
+rentalsRouter.post("/rentals/:id/return", checkRentalId, checkRentalIsOpen, closeRental);
 
 export default rentalsRouter;
