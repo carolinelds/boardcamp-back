@@ -59,6 +59,34 @@ export function daysRentedIsPositive(req, res, next) {
 }
 
 export async function gamesIsAvailable(req, res, next) {
+    const { gameId } = req.body;
+
+    try {
+        const queryGameStock = `
+            SELECT games."stockTotal" as stock FROM games
+            WHERE games.id = $1
+        `;
+        const valuesGameStock = [gameId];
+        const gameStockResult = await db.query(queryGameStock, valuesGameStock);
+        const gameStock = gameStockResult.rows[0].stock;
+
+        const queryRentals = `
+            SELECT rentals.* FROM rentals
+            WHERE rentals."gameId" = $1
+        `;
+        const valuesRentals = [gameId];
+        const rentalsResult = await db.query(queryRentals, valuesRentals);
+        const rentalsTotal = rentalsResult.rowCount;
+
+        if (rentalsTotal === gameStock) {
+            res.status(400).send("Não há mais desse jogo em estoque.");
+            return;
+        }
+    } catch(e) {
+        console.log(e);
+        res.status(500).send("Erro inesperado na validação dos dados.");
+        return;
+    }
 
     next();
 }

@@ -112,5 +112,9 @@ export async function createRental(req, res) {
         console.log(e);
         res.status(500).send("Ocorreu um erro nessa transação.");
     }
+}
+
+export async function closeRental(req, res) {
+    const { id } = req.params;
     
 }
