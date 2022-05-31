@@ -43,7 +43,7 @@ export async function getRentals(req, res) {
         const rentalsResult = await db.query(query, values);
         const rentals = rentalsResult.rows;
 
-
+        let finalRentals = [];
         for (let rental of rentals) {
             const queryCustomer = `
                 SELECT customers.id, customers.name
@@ -66,10 +66,10 @@ export async function getRentals(req, res) {
             const gameResult = await db.query(queryGame, valuesGame);
             const game = gameResult.rows[0];
 
-            rental = { ...rental, customer, game };
+            finalRentals.push({ ...rental, customer, game });
         }
 
-        res.send(rentals);
+        res.send(finalRentals);
 
     } catch (e) {
         console.log(e);
