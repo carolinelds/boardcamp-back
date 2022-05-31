@@ -1,13 +1,10 @@
-import joi from "joi";
 import db from "./../db.js";
+import categorySchema from "./../schemas/categorySchema.js";
 
 export async function categoriesMiddleware(req, res, next) {
     const category = req.body;
 
     try {
-        const categorySchema = joi.object({
-            name: joi.string().trim().required()
-        });
         const { error } = categorySchema.validate(category, { abortEarly: false });
         if (error) {
             res.status(400).send(error.details.map(detail => detail.message));
