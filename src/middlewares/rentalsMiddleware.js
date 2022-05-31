@@ -107,8 +107,6 @@ export async function checkRentalId(req, res, next) {
         }
 
     } catch (e) {
-        console.log("erro no checkRentalId");
-        console.log(e);
         res.status(500).send("Erro inesperado na validação dos dados.");
         return;
     }
@@ -127,13 +125,34 @@ export async function checkRentalIsOpen(req, res, next) {
         const values = [id];
         const rentalResult = await db.query(query, values);
         if (rentalResult.rows[0].returnDate !== null) {
-            res.status(404).send("Esse aluguel já foi finalizado.");
+            res.status(400).send("Esse aluguel já foi finalizado.");
             return;
         }
 
     } catch (e) {
-        console.log("erro no checkIsOpen");
-        console.log(e);
+        res.status(500).send("Erro inesperado na validação dos dados.");
+        return;
+    }
+
+    next();
+}
+
+export async function checkRentalIsClosed(req, res, next) {
+    const { id } = req.params;
+
+    try {
+        const query = `
+            SELECT rentals."returnDate" FROM rentals
+            WHERE id = $1
+        `;
+        const values = [id];
+        const rentalResult = await db.query(query, values);
+        if (rentalResult.rows[0].returnDate === null) {
+            res.status(400).send("Esse aluguel ainda não foi finalizado.");
+            return;
+        }
+
+    } catch (e) {
         res.status(500).send("Erro inesperado na validação dos dados.");
         return;
     }
